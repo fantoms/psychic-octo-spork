@@ -2,7 +2,10 @@
 from kafka import KafkaProducer
 import ustconfig
 k = KafkaProducer(bootstrap_servers=[ustconfig.kafka_connection])
+import time
 
-kMessage = "Testing"
+kMessage = "Alive!"
 
-k.send("connect-test",kMessage.encode("UTF-8"))
+while True:
+	k.send("heartbeat-monitor",kMessage.encode("UTF-8"))
+	time.sleep(0.2)

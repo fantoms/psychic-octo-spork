@@ -2,7 +2,7 @@
 from kafka import KafkaConsumer
 import ustconfig
 
-c = KafkaConsumer("connect-test",bootstrap_servers=[ustconfig.kafka_connection])
+c = KafkaConsumer("weather-test",bootstrap_servers=[ustconfig.kafka_connection])
 
 while True:
 	for message in c:

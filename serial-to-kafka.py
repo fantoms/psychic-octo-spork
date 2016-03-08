@@ -28,7 +28,7 @@ def SerialReader():
 		if len(serialData) > 2:
 			#data is good, lets output
 			print(datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') + ' $'  + serialData.decode('UTF-8').rstrip('\r\n') + '#')
-			p.send("connect-test",serialData)
+			p.send("weather-test",serialData)
 
 
 loop = asyncio.get_event_loop()
