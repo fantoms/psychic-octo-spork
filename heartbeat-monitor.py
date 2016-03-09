@@ -13,6 +13,7 @@ while True:
 	current_time = datetime.now()
 	print(current_time - last_heartbeat)
 	for message in c:
+		dir(c)
 		# message value and key are raw bytes -- decode if necessary!
 		# e.g., for unicode: `message.value.decode('utf-8')`
 		if len(message.value) > 0:
@@ -23,3 +24,4 @@ while True:
 			print (last_heartbeat)
 		else:
 			print("Empty message")
+	print("done")
