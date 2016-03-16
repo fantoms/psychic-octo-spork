@@ -10,12 +10,12 @@ last_heartbeat = datetime.now()
 current_time = datetime.now()
 
 while True:
-	current_time = datetime.now()
-	print(current_time - last_heartbeat)
 	for message in c:
 		dir(c)
 		# message value and key are raw bytes -- decode if necessary!
 		# e.g., for unicode: `message.value.decode('utf-8')`
+		current_time = datetime.now()
+		print(current_time - last_heartbeat)
 		if len(message.value) > 0:
 			last_heartbeat = datetime.now()	
 			print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
