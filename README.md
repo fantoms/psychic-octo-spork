@@ -1,14 +1,19 @@
 # psychic-octo-spork
 A Python Kafka toolkit intended for transfering serial data from an arduino.
 
-# Requirements:
+# Weather-Data Requirements:
 ```
 Python 3
-Python SMBus
 Python Kafka
 Python Serial
 Python asyncio
 Python concurrent
+```
+
+# Moisture-Data Requirements:
+```
+Python 2
+Python SMBus
 ```
 
 # How to configure "ustconfig":
