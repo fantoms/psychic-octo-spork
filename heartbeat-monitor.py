@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 from kafka import KafkaConsumer
-import ustconfig
+import systemconfig
 from datetime import datetime
 import time
 
-c = KafkaConsumer("heartbeat-monitor",bootstrap_servers=[ustconfig.kafka_connection])
+c = KafkaConsumer("heartbeat-monitor",bootstrap_servers=[systemconfig.kafka_connection])
 
 last_heartbeat = datetime.now()
 current_time = datetime.now()

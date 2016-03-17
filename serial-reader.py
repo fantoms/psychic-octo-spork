@@ -6,14 +6,14 @@ import time, datetime
 #from kafka import KafkaProducer
 from serial import Serial
 
-import ustconfig
+import systemconfig
 
 print("Starting...")
 
 current_port = "/dev/ttyS0"
 #global p
 #setup kafka
-#p = KafkaProducer(bootstrap_servers=[ustconfig.kafka_connection])
+#p = KafkaProducer(bootstrap_servers=[systemconfig.kafka_connection])
 
 s = Serial(current_port,'9600',bytesize=8,parity='N',xonxoff=0,rtscts=0,timeout=1)
 #to add a serial write function, you can use a buffer or rewrite the callback

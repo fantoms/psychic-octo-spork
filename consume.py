@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 from kafka import KafkaConsumer
-import ustconfig
+import systemconfig
 
-c = KafkaConsumer("weather-test",bootstrap_servers=[ustconfig.kafka_connection])
+c = KafkaConsumer("weather-test",bootstrap_servers=[systemconfig.kafka_connection])
 
 while True:
 	for message in c:

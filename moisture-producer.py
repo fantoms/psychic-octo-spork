@@ -6,6 +6,8 @@ import time
 import string
 import errno
 
+from kafka import KafkaProducer
+
 bus = smbus.SMBus(1)
 
 #arduino i2c slave address

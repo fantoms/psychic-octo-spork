@@ -16,7 +16,7 @@ Python 2
 Python SMBus
 ```
 
-# How to configure "ustconfig":
+# How to configure "systemconfig":
 ```
 kafka_hostname = 'ip or host address'
 kafka_port = 'port number'

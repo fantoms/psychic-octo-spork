@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from kafka import KafkaProducer
-import ustconfig
-k = KafkaProducer(bootstrap_servers=[ustconfig.kafka_connection])
+import systemconfig
+k = KafkaProducer(bootstrap_servers=[systemconfig.kafka_connection])
 import time
 from datetime import datetime
 
