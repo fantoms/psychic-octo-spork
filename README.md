@@ -4,7 +4,7 @@ A Python Kafka toolkit intended for transfering serial data from an arduino.
 # Weather-Data Requirements:
 ```
 Python 3
-Python Kafka
+Python Kafka : https://kafka-python.readthedocs.org/en/master/install.html
 Python Serial
 Python asyncio
 Python concurrent
@@ -14,6 +14,7 @@ Python concurrent
 ```
 Python 2
 Python SMBus
+Python Kafka : https://kafka-python.readthedocs.org/en/master/install.html
 ```
 
 # How to configure "systemconfig":
