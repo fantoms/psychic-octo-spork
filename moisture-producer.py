@@ -79,6 +79,8 @@ while True:
 		break
 	except Exception as e:
 		print(e)
+		if not p._closed:
+			p.send('moisture-error',e.encode('UTF-8'))
 		if e.errno == errno.ENXIO:
 			print("Cannot find sensor hub, check connection contacts.")
 			time.sleep(1)
