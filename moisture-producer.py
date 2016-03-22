@@ -55,7 +55,7 @@ while True:
 	try:
 		#master write causes the arduino to send it's last reading
 		writeNumber(1)
-		time.sleep(1)
+		time.sleep(.2)
 		results = readNumber()
 		ts = time.time()
 		stamp = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
@@ -85,7 +85,7 @@ while True:
 		if e.errno == errno.ENXIO:
 			print("Cannot find sensor hub, check connection contacts.")
 			if not p._closed:
-				message = systemconfig.system_id + ': ' + str(datetime.now()) + " " + str(e)
+				message = '$' + systemconfig.system_id + ': ' + str(datetime.now()) + '#'
 				p.send('reconnect-i2c', message.encode('UTF-8'))
 			time.sleep(1)
 			continue
