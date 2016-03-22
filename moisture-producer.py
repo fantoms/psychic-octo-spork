@@ -78,13 +78,15 @@ while True:
 	except KeyboardInterrupt:
 		break
 	except Exception as e:
-		print(e)
+		print(str(datetime.now()) + str(e))
 		if not p._closed:
-			p.send('moisture-error',str(e).encode('UTF-8'))
+			message = str(datetime.now()) + " " + str(e)
+			p.send('moisture-error',message.encode('UTF-8'))
 		if e.errno == errno.ENXIO:
 			print("Cannot find sensor hub, check connection contacts.")
 			if not p._closed:
-				p.send('reconnect-i2c', str(datetime.now()).encode('UTF-8'))
+				message = str(datetime.now()) + " " + str(e)
+				p.send('reconnect-i2c', message.encode('UTF-8'))
 			time.sleep(1)
 			continue
 		continue
