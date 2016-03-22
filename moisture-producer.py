@@ -80,9 +80,11 @@ while True:
 	except Exception as e:
 		print(e)
 		if not p._closed:
-			p.send('moisture-error',e.encode('UTF-8'))
+			p.send('moisture-error',str(e).encode('UTF-8'))
 		if e.errno == errno.ENXIO:
 			print("Cannot find sensor hub, check connection contacts.")
+			if not p._closed:
+				p.send('reconnect-i2c', str(datetime.now()).encode('UTF-8'))
 			time.sleep(1)
 			continue
 		continue
