@@ -22,4 +22,5 @@ Python Kafka : https://kafka-python.readthedocs.org/en/master/install.html
 kafka_hostname = 'ip or host address'
 kafka_port = 'port number'
 kafka_connection = kafka_hostname + ":" + kafka_port
+system_id = 'any string id like: 0001'
 ```

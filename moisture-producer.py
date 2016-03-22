@@ -72,7 +72,7 @@ while True:
 				battery_info += line.rstrip('\r\n')
 			if "current" in line:
 				battery_info += line.rstrip('\r\n')
-		message = stamp + ' '  + battery_info + ''
+		message = systemconfig.system_id + ': ' + stamp + ' '  + battery_info + ''
 		print(message)
 		p.send(battery_topic,message.encode('UTF-8'))
 	except KeyboardInterrupt:
@@ -80,12 +80,12 @@ while True:
 	except Exception as e:
 		print(str(datetime.now()) + str(e))
 		if not p._closed:
-			message = str(datetime.now()) + " " + str(e)
+			message = systemconfig.system_id + ': ' + str(datetime.now()) + " " + str(e)
 			p.send('moisture-error',message.encode('UTF-8'))
 		if e.errno == errno.ENXIO:
 			print("Cannot find sensor hub, check connection contacts.")
 			if not p._closed:
-				message = str(datetime.now()) + " " + str(e)
+				message = systemconfig.system_id + ': ' + str(datetime.now()) + " " + str(e)
 				p.send('reconnect-i2c', message.encode('UTF-8'))
 			time.sleep(1)
 			continue
