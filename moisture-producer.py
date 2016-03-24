@@ -17,6 +17,7 @@ bus = smbus.SMBus(1)
 moisture_topic = "moisture-data"
 battery_topic = "moisture-battery"
 battery_command = "battery2.sh"
+timestamp_format = "%Y-%m-%d %H:%M:%S.%f"
 
 try:
 	p = KafkaProducer(bootstrap_servers=[systemconfig.kafka_connection])
@@ -58,7 +59,7 @@ while True:
 		time.sleep(.2)
 		results = readNumber()
 		ts = time.time()
-		stamp = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+		stamp = datetime.fromtimestamp(ts).strftime(timestamp_format)
 		message = stamp + ' '  + results + ''
 		print(message)
 		p.send(moisture_topic,message.encode('UTF-8'))
@@ -71,6 +72,10 @@ while True:
 			if "Fuel" in line:
 				battery_info += line.rstrip('\r\n')
 			if "current" in line:
+				battery_info += line.rstrip('\r\n')
+			if "voltage" in line:
+				battery_info += line.rstrip('\r\n')
+			if "temp" in line:
 				battery_info += line.rstrip('\r\n')
 		message = systemconfig.system_id + ': ' + stamp + ' '  + battery_info + ''
 		print(message)
