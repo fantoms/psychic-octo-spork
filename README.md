@@ -24,5 +24,5 @@ kafka_port = 'port number'
 kafka_connection = kafka_hostname + ":" + kafka_port
 system_id = 'any string id like: 0001'
 
-Please note that: developers of this project must add a line with *systemconfig.py*, to the .git/info/exclude file.
+Please note: developers of this project must add *systemconfig.py* to the .git/info/exclude file.
 ```
