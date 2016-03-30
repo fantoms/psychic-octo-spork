@@ -28,6 +28,22 @@ except Exception as e:
 #arduino i2c slave address
 slave_address = 0x08
 
+data_log_label = "moisture_data-"
+data_log_format = "%Y-%m-%d-%H:%M"
+#string current_log_date_str = datetime.now().strftime(data_log_format)
+current_log_date = datetime.now().date()
+current_log_filename = data_log_label + datetime.now().strftime(data_log_format)
+current_log = open(systemconfig.local_data_dir + current_log_filename, "a+")
+
+def rotate_log(current_log_date, current_log_filename, current_log):
+	#check date
+	if current_log_date != datetime.now().date():
+		current_log.close()
+		current_log_date = datetime.now().date()
+		current_log_filename = data_log_label + datetime.now().strftime(data_log_format)
+		print(sysconfig.local_data_dir + current_log_filename)
+		current_log = open(systemconfig.local_data_dir + current_log_filename, "a+")
+
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
@@ -53,6 +69,9 @@ def readNumber():
 
 while True:
 	#print("Looping...")
+	rotate_log(current_log_date, current_log_filename, current_log)
+	if p._closed:
+		print("Waiting for kafka...")
 	try:
 		#master write causes the arduino to send it's last reading
 		writeNumber(1)
@@ -63,6 +82,7 @@ while True:
 		message = stamp + ' '  + results + ''
 		print(message)
 		p.send(moisture_topic,message.encode('UTF-8'))
+		current_log.write(message + '\n')
 		#reset results
 		battery_info = ''
 		for line in run_command(battery_command):
