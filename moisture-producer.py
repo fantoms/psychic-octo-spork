@@ -29,20 +29,40 @@ except Exception as e:
 slave_address = 0x08
 
 data_log_label = "moisture_data-"
-data_log_format = "%Y-%m-%d-%H:%M"
+data_log_format = "%Y-%m-%d-%H_%M"
+data_log_buffer = []
+
+
 #string current_log_date_str = datetime.now().strftime(data_log_format)
 current_log_date = datetime.now().date()
 current_log_filename = data_log_label + datetime.now().strftime(data_log_format)
-current_log = open(systemconfig.local_data_dir + current_log_filename, "a+")
+#current_log = open(systemconfig.local_data_dir + current_log_filename, "a+")
+current_log = systemconfig.local_data_dir + current_log_filename
 
-def rotate_log(current_log_date, current_log_filename, current_log):
+
+def rotate_log(current_log_date, current_log_filename, current_log, data_log_buffer):
 	#check date
 	if current_log_date != datetime.now().date():
-		current_log.close()
+		buffer_to_file(data_log_buffer, current_log, True)
+		print("current_log_date: "+ current_log_date + "current_log_filename: " +current_log_filename +"current_log: " +current_log + "data_log_buffer: " + data_log_buffer)
 		current_log_date = datetime.now().date()
 		current_log_filename = data_log_label + datetime.now().strftime(data_log_format)
-		print(sysconfig.local_data_dir + current_log_filename)
-		current_log = open(systemconfig.local_data_dir + current_log_filename, "a+")
+		current_log = systemconfig.local_data_dir + current_log_filename
+		print("data log changed: " + current_log)
+		print("current_log_date: "+ current_log_date + "current_log_filename: " +current_log_filename +"current_log: " +current_log + "data_log_buffer: " + data_log_buffer)
+	else:
+		buffer_to_file(data_log_buffer, current_log)
+
+def buffer_to_file(buffer, data_log, save_now = False):
+	#if buffer element count is greater then buffer limit
+	if len(buffer) > 31 or save_now:
+		#write each element to current local data log
+		current_log = open(data_log, "a+")
+		for message in buffer:
+			current_log.write(message + '\n')
+		current_log.close()
+		#flush buffer
+		buffer[:] = []
 
 def run_command(command):
     p = subprocess.Popen(command,
@@ -67,9 +87,10 @@ def readNumber():
 		number = "".join([chr(byte) for byte in byte_list])
 	return number
 
+print("The application has begun processing messages...")
+
 while True:
 	#print("Looping...")
-	rotate_log(current_log_date, current_log_filename, current_log)
 	if p._closed:
 		print("Waiting for kafka...")
 	try:
@@ -80,9 +101,10 @@ while True:
 		ts = time.time()
 		stamp = datetime.fromtimestamp(ts).strftime(timestamp_format)
 		message = stamp + ' '  + results + ''
-		print(message)
+		#print(message)
 		p.send(moisture_topic,message.encode('UTF-8'))
-		current_log.write(message + '\n')
+		data_log_buffer.append(message)
+		#current_log.write(message + '\n')
 		#reset results
 		battery_info = ''
 		for line in run_command(battery_command):
@@ -98,20 +120,26 @@ while True:
 			if "temp" in line:
 				battery_info += line.rstrip('\r\n')
 		message = systemconfig.system_id + ': ' + stamp + ' '  + battery_info + ''
-		print(message)
+		#data_log_buffer.append(message)
+		#print(message)
 		p.send(battery_topic,message.encode('UTF-8'))
+		#add timeout logic here:
+		rotate_log(current_log_date, current_log_filename, current_log, data_log_buffer)
 	except KeyboardInterrupt:
+		buffer_to_file(data_log_buffer, current_log, True)
 		break
 	except Exception as e:
+		buffer_to_file(data_log_buffer, current_log, True)
 		print(str(datetime.now()) + str(e))
 		if not p._closed:
 			message = systemconfig.system_id + ': ' + str(datetime.now()) + " " + str(e)
 			p.send('moisture-error',message.encode('UTF-8'))
-		if e.errno == errno.ENXIO:
-			print("Cannot find sensor hub, check connection contacts.")
-			if not p._closed:
-				message = '$' + systemconfig.system_id + ': ' + str(datetime.now()) + '#'
-				p.send('reconnect-i2c', message.encode('UTF-8'))
-			time.sleep(1)
-			continue
+		if hasattr(e, 'errno'):
+			if e.errno == errno.ENXIO:
+				print("Cannot find sensor hub, check connection contacts.")
+				if not p._closed:
+					message = '$' + systemconfig.system_id + ': ' + str(datetime.now()) + '#'
+					p.send('reconnect-i2c', message.encode('UTF-8'))
+				time.sleep(1)
+				continue
 		continue
