@@ -28,10 +28,11 @@ except Exception as e:
 #arduino i2c slave address
 slave_address = 0x08
 
-data_log_label = "moisture_data-"
-data_log_format = "%Y-%m-%d-%H_%M"
-data_log_buffer = []
+global data_log_buffer, current_log_date, current_log_filename, current_log
 
+data_log_label = "moisture_data-"
+data_log_format = "%Y-%m-%d_%H-%M"
+data_log_buffer = []
 
 #string current_log_date_str = datetime.now().strftime(data_log_format)
 current_log_date = datetime.now().date()
@@ -39,17 +40,17 @@ current_log_filename = data_log_label + datetime.now().strftime(data_log_format)
 #current_log = open(systemconfig.local_data_dir + current_log_filename, "a+")
 current_log = systemconfig.local_data_dir + current_log_filename
 
-
-def rotate_log(current_log_date, current_log_filename, current_log, data_log_buffer):
+def rotate_log():
+	global data_log_buffer, current_log_date, current_log_filename, current_log
 	#check date
 	if current_log_date != datetime.now().date():
 		buffer_to_file(data_log_buffer, current_log, True)
-		print("current_log_date: "+ current_log_date + "current_log_filename: " +current_log_filename +"current_log: " +current_log + "data_log_buffer: " + data_log_buffer)
+		print("current_log_date: " + str(current_log_date) + "current_log_filename: " + current_log_filename + "current_log: " + current_log + "data_log_buffer: " + str(data_log_buffer))
 		current_log_date = datetime.now().date()
 		current_log_filename = data_log_label + datetime.now().strftime(data_log_format)
 		current_log = systemconfig.local_data_dir + current_log_filename
 		print("data log changed: " + current_log)
-		print("current_log_date: "+ current_log_date + "current_log_filename: " +current_log_filename +"current_log: " +current_log + "data_log_buffer: " + data_log_buffer)
+		print("current_log_date: " + str(current_log_date) + "current_log_filename: " + current_log_filename + "current_log: " + current_log + "data_log_buffer: " + str(data_log_buffer))
 	else:
 		buffer_to_file(data_log_buffer, current_log)
 
@@ -124,7 +125,8 @@ while True:
 		#print(message)
 		p.send(battery_topic,message.encode('UTF-8'))
 		#add timeout logic here:
-		rotate_log(current_log_date, current_log_filename, current_log, data_log_buffer)
+		#rotate_log(current_log_date, current_log_filename, current_log, data_log_buffer)
+		rotate_log()
 	except KeyboardInterrupt:
 		buffer_to_file(data_log_buffer, current_log, True)
 		break
