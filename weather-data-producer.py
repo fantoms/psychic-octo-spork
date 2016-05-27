@@ -65,10 +65,9 @@ def SerialReader():
 			#data is good, lets output
 			stamp = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 			message = stamp + ' $'  + serialData.decode('UTF-8').rstrip('\r\n') + '#'
-			print(message)
+			#debug: print(message)
 			data_log_buffer.append(message)
 			p.send("weather-test",message.encode('UTF-8'))
-			print(data_log_buffer)
 		rotate_log()
 
 loop = asyncio.get_event_loop()
