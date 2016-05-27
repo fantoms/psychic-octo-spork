@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 import asyncio
 import concurrent
-import time, datetime
+import time
+from datetime import datetime
 #import kafka
 from kafka import KafkaProducer
 from serial import Serial
@@ -43,6 +44,20 @@ def buffer_to_file(buffer, data_log, save_now = False):
 		#flush buffer
 	buffer[:] = []
 
+def rotate_log():
+	global data_log_buffer, current_log_date, current_log_filename, current_log
+	#check date
+	if current_log_date != datetime.now().date():
+		buffer_to_file(data_log_buffer, current_log, True)
+		print("current_log_date: " + str(current_log_date) + "current_log_filename: " + current_log_filename + "current_log: " + current_log + "data_log_buffer: " + str(data_log_buffer))
+		current_log_date = datetime.now().date()
+		current_log_filename = data_log_label + datetime.now().strftime(data_log_format)
+		current_log = systemconfig.local_data_dir + current_log_filename
+		print("data log changed: " + current_log)
+		print("current_log_date: " + str(current_log_date) + "current_log_filename: " + current_log_filename + "current_log: " + current_log + "data_log_buffer: " + str(data_log_buffer))
+	else:
+		buffer_to_file(data_log_buffer, current_log)
+
 def SerialReader():
 	global p
 	if s.readable():
@@ -51,7 +66,7 @@ def SerialReader():
 		ts = time.time()
 		if len(serialData) > 2:
 			#data is good, lets output
-			stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+			stamp = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 			message = stamp + ' $'  + serialData.decode('UTF-8').rstrip('\r\n') + '#'
 			print(message)
 			data_log_buffer.append(message)
