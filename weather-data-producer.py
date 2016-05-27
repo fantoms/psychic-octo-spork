@@ -3,19 +3,19 @@ import asyncio
 import concurrent
 import time
 from datetime import datetime
+
+print("Starting...")
+
 #import kafka
 from kafka import KafkaProducer
 from serial import Serial
 
 import systemconfig
 
-print("Starting...")
-
-current_port = "/dev/ttyS0"
+global data_log_buffer, current_log_date, current_log_filename, current_log
 global p
 
-global data_log_buffer, current_log_date, current_log_filename, current_log
-
+current_port = "/dev/ttyS0"
 data_log_label = "weather_data-"
 data_log_format = "%Y-%m-%d_%H-%M"
 data_log_buffer = []
@@ -28,10 +28,7 @@ current_log = systemconfig.local_data_dir + current_log_filename
 
 #setup kafka
 p = KafkaProducer(bootstrap_servers=[systemconfig.kafka_connection])
-
 s = Serial(current_port,'9600',bytesize=8,parity='N',xonxoff=0,rtscts=0,timeout=1)
-#to add a serial write function, you can use a buffer or rewrite the callback
-#buffer = ""
 
 def buffer_to_file(buffer, data_log, save_now = False):
 	#if buffer element count is greater then buffer limit
@@ -42,7 +39,7 @@ def buffer_to_file(buffer, data_log, save_now = False):
 			current_log.write(message + '\n')
 		current_log.close()
 		#flush buffer
-	buffer[:] = []
+		buffer[:] = []
 
 def rotate_log():
 	global data_log_buffer, current_log_date, current_log_filename, current_log
@@ -71,7 +68,8 @@ def SerialReader():
 			print(message)
 			data_log_buffer.append(message)
 			p.send("weather-test",message.encode('UTF-8'))
-	rotate_log()
+			print(data_log_buffer)
+		rotate_log()
 
 loop = asyncio.get_event_loop()
 loop.add_reader(s.fileno(), SerialReader)
