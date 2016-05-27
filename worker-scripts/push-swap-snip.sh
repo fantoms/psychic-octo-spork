@@ -4,6 +4,6 @@ declare -a workers=("w01" "w02" "w03" "w04" "w05" "w06" "w07" "w08" "w09" "w10" 
 #push files with scp to each machine name in array
 for i in "${workers[@]}"
 do
-	scp swappiness-snippet append-local-sysctl.conf.sh $i:
+	scp append-local-sysctl.conf.sh $i:
 done
 
