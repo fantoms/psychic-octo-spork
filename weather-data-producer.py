@@ -30,6 +30,9 @@ current_log = systemconfig.local_data_dir + current_log_filename
 p = KafkaProducer(bootstrap_servers=[systemconfig.kafka_connection])
 s = Serial(current_port,'9600',bytesize=8,parity='N',xonxoff=0,rtscts=0,timeout=1)
 
+print("data log changed: " + current_log)
+print("current_log_date: " + str(current_log_date) + "current_log_filename: " + current_log_filename + "current_log: " + current_log + "data_log_buffer: " + str(data_log_buffer))
+
 def buffer_to_file(buffer, data_log, save_now = False):
 	#if buffer element count is greater then buffer limit
 	if len(buffer) > 31 or save_now:
