@@ -6,7 +6,8 @@ import errno
 def RunSensorScript():
 	import subprocess
 #	sensorScript = '/home/chip/psychic-octo-spork/weather-data-producer.py'
-	sensorScript = '/home/chip/launch-tmux-weather.sh'
+#	sensorScript = '/home/chip/launch-tmux-weather.sh'
+	sensorScript = '/home/chip/psychic-octo-spork/launch-tmux-weather.sh'
 #	subprocess.Popen([sys.executable, sensorScript], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	subprocess.Popen([sensorScript], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
