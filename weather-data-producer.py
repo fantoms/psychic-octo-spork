@@ -32,14 +32,20 @@ current_log = systemconfig.local_data_dir + current_log_filename
 p = KafkaProducer(bootstrap_servers=[systemconfig.kafka_connection])
 s = Serial(current_port,'9600',bytesize=8,parity='N',xonxoff=0,rtscts=0,timeout=1)
 
+pidFile = '/tmp/'+data_log_label+'.pid'
+
 print("data log changed: " + current_log)
 print("current_log_date: " + str(current_log_date) + "current_log_filename: " + current_log_filename + "current_log: " + current_log + "data_log_buffer: " + str(data_log_buffer))
 
 def writePidFile():
 	pid = str(os.getpid())
-	f = open('/tmp/'+data_log_label+'pid', 'w')
+	f = open(pidFile, 'w')
 	f.write(pid)
 	f.close()
+
+def deletePidFile():
+	if os.path.exists(pidFile):
+		os.remove(pidFile)
 
 def buffer_to_file(buffer, data_log, save_now = False):
 	#if buffer element count is greater then buffer limit
@@ -91,6 +97,7 @@ try:
 except KeyboardInterrupt:
 	s.close()
 	buffer_to_file(data_log_buffer, current_log, True)
+	deletePidFile()
 	loop.close()
 except Exception as e:
 	buffer_to_file(data_log_buffer, current_log, True)
@@ -101,4 +108,5 @@ except Exception as e:
 finally:
 #	chipenable.gpio.output("XIO-P0", chipenable.GPIO.HIGH)
 #	chipenable.gpio.cleanup()
+	deletePidFile()
 	loop.close()
