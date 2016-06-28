@@ -2,6 +2,7 @@
 import asyncio
 import concurrent
 import time
+import os
 from datetime import datetime
 
 print("Starting...")
@@ -11,6 +12,7 @@ from kafka import KafkaProducer
 from serial import Serial
 
 import systemconfig
+#import chipenable
 
 global data_log_buffer, current_log_date, current_log_filename, current_log
 global p
@@ -32,6 +34,12 @@ s = Serial(current_port,'9600',bytesize=8,parity='N',xonxoff=0,rtscts=0,timeout=
 
 print("data log changed: " + current_log)
 print("current_log_date: " + str(current_log_date) + "current_log_filename: " + current_log_filename + "current_log: " + current_log + "data_log_buffer: " + str(data_log_buffer))
+
+def writePidFile():
+	pid = str(os.getpid())
+	f = open('/tmp/'+data_log_label+'pid', 'w')
+	f.write(pid)
+	f.close()
 
 def buffer_to_file(buffer, data_log, save_now = False):
 	#if buffer element count is greater then buffer limit
@@ -69,12 +77,14 @@ def SerialReader():
 			stamp = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 			message = stamp + ' $'  + serialData.decode('UTF-8').rstrip('\r\n') + '#'
 			#debug: print(message)
+			print(message)
 			data_log_buffer.append(message)
 			p.send("weather-test",message.encode('UTF-8'))
 		rotate_log()
 
 loop = asyncio.get_event_loop()
 loop.add_reader(s.fileno(), SerialReader)
+writePidFile()
 
 try:
 	loop.run_forever()
@@ -89,4 +99,6 @@ except Exception as e:
 		message = systemconfig.system_id + ': ' + str(datetime.now()) + " " + str(e)
 		p.send('weather-error',message.encode('UTF-8'))
 finally:
+#	chipenable.gpio.output("XIO-P0", chipenable.GPIO.HIGH)
+#	chipenable.gpio.cleanup()
 	loop.close()
