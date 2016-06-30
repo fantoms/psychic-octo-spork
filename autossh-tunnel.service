@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=chip
 Environment="AUTOSSH_GATETIME=0"
-ExecStart=/usr/bin/autossh -M 0 -N -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -o "ServerAliveInterval 5" -o "ServerAliveCountMax 3" -i /home/chip/.ssh/id_rsa -R 43200:localhost:22 -L 9092:localhost:9092 user@host
+ExecStart=/usr/bin/autossh -M 56400 -N -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -o "ServerAliveInterval 5" -o "ServerAliveCountMax 3" -o "ExitOnForwardFailure yes" -i /home/chip/.ssh/id_rsa -R 43200:localhost:22 -L 9092:localhost:9092 user@host
 Restart=always
 
 [Install]

@@ -1,0 +1,5 @@
+%chip ALL=NOPASSWD: /bin/systemctl start ust-cluster-tunnel.service
+%chip ALL=NOPASSWD: /bin/systemctl restart ust-cluster-tunnel.service
+%chip ALL=NOPASSWD: /bin/systemctl stop ust-cluster-tunnel.service
+%chip ALL=NOPASSWD: /bin/systemctl status ust-cluster-tunnel.service
+%chip ALL=NOPASSWD: /bin/systemctl status ust-cluster-tunnel.service -l
